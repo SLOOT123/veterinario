@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Historial de Mascota PDF</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; }
+        .header { display: flex; align-items: center; margin-bottom: 2em; }
+        .logo { height: 80px; margin-right: 1.5em; }
+        h1 { color: #2c3e50; margin-bottom: 0; }
+        h2 { color: #34495e; }
+        ul { list-style: none; padding: 0; }
+        li { margin-bottom: 0.5em; }
+        .info { margin-bottom: 1.5em; }
+        .editable { background: #f8f9fa; border: 1px dashed #ccc; padding: 0.2em 0.5em; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="file://{{ logo_url }}" alt="Logo" class="logo">
+        <h1 contenteditable="true" class="editable">Historial de Mascota</h1>
+    </div>
+    <div class="info">
+        <p><strong>Nombre:</strong> <span contenteditable="true" class="editable">{{ mascota.nombre }}</span></p>
+        <p><strong>Especie:</strong> <span contenteditable="true" class="editable">{{ mascota.especie }}</span></p>
+        <p><strong>Dueño:</strong> <span contenteditable="true" class="editable">{{ mascota.cliente.nombre }}</span></p>
+    </div>
+    <h2 contenteditable="true" class="editable">Consultas</h2>
+    <ul>
+        {% for consulta in consultas %}
+            <li><span contenteditable="true" class="editable">{{ consulta.fecha }} - {{ consulta.motivo }}</span></li>
+        {% empty %}
+            <li>No hay consultas registradas.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

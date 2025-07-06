@@ -1,0 +1,50 @@
+{% extends 'gestion/base.html' %}
+
+{% block title %}Historial de {{ mascota.nombre }}{% endblock %}
+
+{% block content %}
+<a href="{% url 'historial_mascota_pdf' mascota.id %}" class="btn btn-outline-primary mb-3">Exportar historial en PDF</a>
+
+<div class="mb-4">
+    <h2>Historial Clínico: {{ mascota.nombre }}</h2>
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+            <p><strong>Dueño:</strong> {{ mascota.cliente.nombre }}</p>
+            <p><strong>Especie:</strong> {{ mascota.especie }}</p>
+            <p><strong>Raza:</strong> {{ mascota.raza }}</p>
+        </div>
+    </div>
+    <a href="{% url 'lista_mascotas' %}" class="btn btn-secondary mb-3">← Volver a mascotas</a>
+    <a href="{% url 'boleta_pdf' mascota.cliente.id mascota.id %}" class="btn btn-outline-secondary mt-3">
+    🧾 Generar Boleta de Venta (PDF)
+</a>
+
+    
+
+
+
+{% if consultas %}
+    {% for consulta in consultas %}
+        <div class="card mb-3 shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <strong>{{ consulta.fecha }}</strong> – {{ consulta.motivo }}
+            </div>
+            
+            <div class="card-body">
+                <p><strong>Diagnóstico:</strong> {{ consulta.diagnostico|default:"-" }}</p>
+                <p><strong>Tratamiento:</strong> {{ consulta.tratamiento|default:"-" }}</p>
+                <p><strong>Observaciones:</strong> {{ consulta.observaciones|default:"-" }}</p>
+                <div class="mt-3">
+                    <a href="{% url 'editar_consulta' consulta.id %}" class="btn btn-sm btn-warning">Editar</a>
+                    <a href="{% url 'eliminar_consulta' consulta.id %}" class="btn btn-sm btn-danger">Eliminar</a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <div class="alert alert-info">
+        No hay consultas registradas para esta mascota.
+    </div>
+{% endif %}
+{% endblock %}
+

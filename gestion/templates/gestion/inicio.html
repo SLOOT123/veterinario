@@ -1,0 +1,188 @@
+
+{% extends 'gestion/base.html' %}
+{% load static %}
+{% load filters %}
+
+{% block title %}Inicio - Dashboard Profesional{% endblock %}
+
+{% block content %}
+<style>
+    /* --- Estilos Generales del Dashboard --- */
+    .dashboard-container {
+        padding: 2rem;
+        color: white;
+    }
+
+    .dashboard-container h1, .dashboard-container h2, .dashboard-container h5, .dashboard-container .form-label {
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+    }
+
+    /* --- Contenedor de Widgets (Tarjetas y Gráficos) --- */
+    .widget-container {
+        padding: 1.5rem;
+        border-radius: 12px;
+        background-color: rgba(255, 255, 255, 0.95); /* Fondo muy claro, casi opaco */
+        color: #2c3e50; /* Texto oscuro para máxima legibilidad */
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .widget-container h5 {
+        color: #34495e;
+        text-shadow: none;
+        font-weight: 600;
+    }
+
+    /* --- Tarjetas de Métricas (KPIs) --- */
+    .kpi-card {
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 12px;
+        padding: 1.5rem;
+        color: white;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .kpi-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
+    }
+    .kpi-card .kpi-title {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: #ffc107;
+    }
+    .kpi-card .kpi-icon {
+        font-size: 3rem;
+        opacity: 0.7;
+    }
+    .kpi-card .kpi-link {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    .kpi-card .kpi-link:hover {
+        text-decoration: underline;
+    }
+
+    /* --- Estilos para la Matriz (Heatmap) --- */
+    .heatmap-table {
+        border-collapse: separate;
+        border-spacing: 2px;
+    }
+    .heatmap-table th, .heatmap-table td {
+        width: 28px;
+        height: 28px;
+        line-height: 28px;
+        font-size: 0.8rem;
+        text-align: center;
+        vertical-align: middle;
+        border-radius: 4px;
+    }
+    .heatmap-table thead th {
+        background: transparent;
+        border: none;
+    }
+    .heatmap-table tbody td {
+        background-color: #ebedf0; /* Color para días sin datos */
+        color: #555;
+        border: none;
+        transition: background-color 0.3s;
+    }
+    /* Colores del Heatmap */
+    .heatmap-table td[data-level='1'] { background-color: #9be9a8; }
+    .heatmap-table td[data-level='2'] { background-color: #40c463; }
+    .heatmap-table td[data-level='3'] { background-color: #30a14e; }
+    .heatmap-table td[data-level='4'] { background-color: #216e39; color: white; }
+</style>
+
+<div class="container-fluid dashboard-container">
+
+    <div class="text-center mb-5">
+        <h1><i class="bi bi-clipboard-data"></i> Veterinaria PerroVaca</h1>
+        <p class="lead">Análisis de Dashboard  Veterinaria PerroVaca</p>
+    </div>
+
+    <!-- FILTROS -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-10">
+            <form method="get" class="row g-3 align-items-end p-4 rounded" style="background-color: rgba(0,0,0,0.25);">
+                <div class="col-md-5"><label for="año-select" class="form-label">Año</label><select name="año" id="año-select" class="form-select">{% for año_disp in años_disponibles %}<option value="{{ año_disp }}" {% if año_actual == año_disp %}selected{% endif %}>{{ año_disp }}</option>{% endfor %}</select></div>
+                <div class="col-md-5"><label for="especie-select" class="form-label">Especie</label><select name="especie" id="especie-select" class="form-select"><option value="">-- Todas --</option>{% for especie in especies_disponibles %}<option value="{{ especie }}" {% if especie_actual == especie %}selected{% endif %}>{{ especie }}</option>{% endfor %}</select></div>
+                <div class="col-md-2"><button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel-fill"></i> Filtrar</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TARJETAS KPI -->
+    <div class="row mb-5">
+        <div class="col-md-4 mb-4"><div class="kpi-card text-center"><i class="bi bi-people-fill kpi-icon"></i><h5 class="kpi-title mt-2">Clientes</h5><p class="card-text">Ver o registrar nuevos clientes.</p><a href="{% url 'lista_clientes' %}" class="kpi-link">Gestionar <i class="bi bi-arrow-right-short"></i></a></div></div>
+        <div class="col-md-4 mb-4"><div class="kpi-card text-center"><i class="bi bi-heart-pulse-fill kpi-icon"></i><h5 class="kpi-title mt-2">Mascotas</h5><p class="card-text">Gestionar la información de mascotas.</p><a href="{% url 'lista_mascotas' %}" class="kpi-link">Gestionar <i class="bi bi-arrow-right-short"></i></a></div></div>
+        <div class="col-md-4 mb-4"><div class="kpi-card text-center"><i class="bi bi-journal-text kpi-icon"></i><h5 class="kpi-title mt-2">Consultas</h5><p class="card-text">Revisar el historial clínico.</p><a href="{% url 'lista_consultas' %}" class="kpi-link">Gestionar <i class="bi bi-arrow-right-short"></i></a></div></div>
+    </div>
+
+    <!-- GRÁFICOS -->
+    <div class="row">
+        <div class="col-lg-6 mb-4"><div class="widget-container"><h5 class="text-center mb-3">📊 Consultas por Mes</h5><canvas id="consultasChart"></canvas></div></div>
+        <div class="col-lg-6 mb-4"><div class="widget-container"><h5 class="text-center mb-3">🐶 Distribución por Especie</h5><div class="mx-auto" style="max-width: 350px;"><canvas id="especiesChart"></canvas></div></div></div>
+    </div>
+
+    <!-- CLIENTES Y MATRIZ -->
+    <div class="row mt-4">
+        <div class="col-lg-12 mb-4">
+            <div class="widget-container">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="flex-grow-1">👥 Clientes con más Mascotas</h5>
+                    <a href="{% url 'exportar_clientes_excel' %}" class="btn btn-sm btn-success"><i class="bi bi-download"></i> Exportar a Excel</a>
+                </div>
+                <canvas id="clientesChart" height="100"></canvas>
+            </div>
+        </div>
+        <div class="col-lg-12 mb-4">
+            <div class="widget-container">
+                <h5 class="text-center mb-3">🗓️  Consultas Diarias de Mascotas  ({{ año_actual }})</h5>
+                <div class="table-responsive">
+                    <table class="table table-borderless heatmap-table mx-auto">
+                        <thead><tr><th></th>{% for d in 1|to:31 %}<th>{{ d }}</th>{% endfor %}</tr></thead>
+                        <tbody>
+                            {% for mes, dias in matriz_datos.items %}
+                            <tr>
+                                <td><strong>{{ mes|slice:":3" }}.</strong></td>
+                                {% for d in 1|to:31 %}
+                                    {% with consultas=dias|dict_get:d|default:0 %}
+                                        <td title="{{ consultas }} consultas el {{ d }} de {{ mes }}" 
+                                            data-level="{% if consultas >= 8 %}4{% elif consultas >= 5 %}3{% elif consultas >= 2 %}2{% elif consultas > 0 %}1{% else %}0{% endif %}">
+                                            {% if consultas > 0 %}{{ consultas }}{% endif %}
+                                        </td>
+                                    {% endwith %}
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CHART.JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function ( ) {
+    Chart.defaults.color = '#34495e';
+    Chart.defaults.font.family = "'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif";
+
+    // Tu código de Chart.js (sin cambios, ya es correcto)
+    const ctx1 = document.getElementById('consultasChart');
+    if(ctx1) new Chart(ctx1, {type:'bar',data:{labels:{{meses|safe}},datasets:[{label:'Nº de Consultas',data:{{consultas_por_mes|safe}},backgroundColor:'rgba(54, 162, 235, 0.7)',borderColor:'rgba(54, 162, 235, 1)',borderWidth:1,borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}}});
+    const ctx2 = document.getElementById('especiesChart');
+    if(ctx2) new Chart(ctx2, {type:'pie',data:{labels:{{especies|safe}},datasets:[{data:{{consultas_por_especie|safe}},backgroundColor:['#28a745','#007bff','#dc3545','#ffc107','#17a2b8','#6f42c1'],hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:true}});
+    const ctx3 = document.getElementById('clientesChart');
+    if(ctx3) new Chart(ctx3, {type:'bar',data:{labels:{{clientes|safe}},datasets:[{label:'Nº de Mascotas',data:{{mascotas_por_cliente|safe}},backgroundColor:'rgba(255, 99, 132, 0.7)',borderColor:'rgba(255, 99, 132, 1)',borderWidth:1,borderRadius:4}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{stepSize:1}}}}});
+});
+</script>
+
+<div style="background: #222; color: #ffc107; padding: 0.5em 1em; font-size: 0.95em; text-align: right; border-top: 1px solid #444; margin-top: 2em;">
+    Derechos de autor © 2025 Jhovany Calixto Luna. Todos los derechos reservados.
+</div>
+{% endblock %}

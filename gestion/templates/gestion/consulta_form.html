@@ -1,0 +1,133 @@
+{% extends 'gestion/base.html' %}
+
+{% block title %}Registrar Nueva Consulta{% endblock %}
+
+{% block content %}
+<style>
+    /* Contenedor principal para el formulario */
+    .form-container {
+        max-width: 800px; /* Ancho máximo para el formulario */
+        margin: 2rem auto; /* Centrado en la página con margen superior/inferior */
+        background-color: #ffffff;
+        padding: 2.5rem;
+        border-radius: 15px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        color: #333;
+    }
+
+    /* Estilo del encabezado del formulario */
+    .form-header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+    }
+    .form-header h2 {
+        color: #2c3e50;
+        font-weight: 700;
+        text-shadow: none;
+    }
+    .form-header p {
+        color: #6c757d;
+        font-size: 1.1rem;
+    }
+
+    /* Estilo para los campos del formulario */
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+    }
+    .form-control, .form-select {
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        border: 1px solid #ced4da;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    /* Contenedor para los botones de acción */
+    .form-actions {
+        display: flex;
+        justify-content: flex-end; /* Alinea los botones a la derecha */
+        gap: 1rem; /* Espacio entre botones */
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e9ecef;
+    }
+</style>
+
+<div class="form-container">
+    <div class="form-header">
+        <h2><i class="bi bi-journal-plus"></i> Registrar Consulta Veterinaria</h2>
+        <p>Completa los detalles de la visita del paciente.</p>
+    </div>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        <!-- Muestra errores generales del formulario si existen -->
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="row g-3">
+            <!-- Campo Mascota -->
+            <div class="col-md-6">
+                <label for="{{ form.mascota.id_for_label }}" class="form-label">Mascota</label>
+                {{ form.mascota }}
+                {% if form.mascota.errors %}
+                    <div class="text-danger small mt-1">{{ form.mascota.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Campo Fecha -->
+            <div class="col-md-6">
+                <label for="{{ form.fecha.id_for_label }}" class="form-label">Fecha de la Consulta</label>
+                {{ form.fecha }}
+                {% if form.fecha.errors %}
+                    <div class="text-danger small mt-1">{{ form.fecha.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Campo Motivo -->
+            <div class="col-12">
+                <label for="{{ form.motivo.id_for_label }}" class="form-label">Motivo de la Consulta</label>
+                {{ form.motivo }}
+                {% if form.motivo.errors %}
+                    <div class="text-danger small mt-1">{{ form.motivo.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Campo Diagnóstico -->
+            <div class="col-12">
+                <label for="{{ form.diagnostico.id_for_label }}" class="form-label">Diagnóstico</label>
+                {{ form.diagnostico }}
+                {% if form.diagnostico.errors %}
+                    <div class="text-danger small mt-1">{{ form.diagnostico.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Campo Tratamiento -->
+            <div class="col-12">
+                <label for="{{ form.tratamiento.id_for_label }}" class="form-label">Tratamiento Indicado</label>
+                {{ form.tratamiento }}
+                {% if form.tratamiento.errors %}
+                    <div class="text-danger small mt-1">{{ form.tratamiento.errors.0 }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a href="{% url 'lista_consultas' %}" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-primary px-4">
+                <i class="bi bi-check-circle-fill me-2"></i>Guardar Consulta
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

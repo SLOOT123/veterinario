@@ -1,0 +1,31 @@
+{% extends 'gestion/base.html' %}
+
+{% block title %}Confirmar Eliminación{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center">
+    <div class="card shadow p-4" style="max-width: 500px; width: 100%;">
+        <div class="card-body">
+            <h4 class="card-title text-danger mb-3">
+                <i class="bi bi-exclamation-triangle-fill"></i> Confirmar Eliminación
+            </h4>
+            <p class="mb-3">
+                ¿Estás seguro de que deseas eliminar esta <strong>{{ tipo }}</strong>?
+            </p>
+            <p class="text-muted"><em>{{ objeto }}</em></p>
+
+            <form method="post" class="d-flex gap-2">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+                <a href="javascript:history.back()" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+ {- ´
+ 
+ 
+ 
+p
+}

@@ -1,0 +1,157 @@
+{% extends 'gestion/base.html' %}
+{% block title %}Crear Cuenta{% endblock %}
+
+{% block content %}
+
+<style>
+    .register-container {
+        /* Centra el contenido vertical y horizontalmente */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 85vh;
+        padding: 2rem 0; /* Espacio vertical por si el formulario es alto en móviles */
+        perspective: 1000px; /* Activa el espacio 3D */
+    }
+
+    .register-card {
+        width: 100%;
+        max-width: 480px; /* Un poco más ancho para el formulario de registro */
+        padding: 2.5rem;
+        
+        /* --- Efecto 3D y "Glassmorphism" --- */
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        
+        /* Sombras para crear profundidad */
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), 
+                    inset 0 -2px 5px rgba(0,0,0,0.2), 
+                    inset 0 2px 5px rgba(255,255,255,0.3);
+
+        /* Transición suave para el efecto hover */
+        transition: transform 0.5s ease;
+        transform-style: preserve-3d;
+    }
+
+    /* Efecto 3D al pasar el ratón por encima */
+    .register-container:hover .register-card {
+        transform: rotateY(-5deg) rotateX(2deg) translateZ(20px);
+    }
+
+    .register-card h3 {
+        color: #fff;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+        font-weight: 600;
+    }
+
+    .form-label {
+        color: #eee;
+    }
+
+    .form-control {
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        border-radius: 8px;
+    }
+
+    .form-control:focus {
+        background: rgba(0, 0, 0, 0.3);
+        border-color: #198754; /* Color de éxito de Bootstrap */
+        box-shadow: 0 0 10px rgba(25, 135, 84, 0.5);
+        color: white;
+    }
+
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    .btn-success {
+        /* Gradiente para el botón de registro */
+        background-image: linear-gradient(to right, #198754, #157347);
+        border: none;
+        padding: 12px;
+        font-weight: 600;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(25, 135, 84, 0.4);
+    }
+
+    .login-link a {
+        color: #ffc107;
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+    .login-link a:hover {
+        text-decoration: underline;
+    }
+
+</style>
+
+<div class="register-container">
+    <div class="register-card">
+        <h3 class="text-center mb-4">
+            <i class="bi bi-person-plus-fill"></i>
+            Crear Nueva Cuenta
+        </h3>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+            
+            {% if form.errors %}
+                <div class="alert alert-danger p-2 mb-3 text-center">
+                    Por favor, corrige los errores a continuación.
+                </div>
+            {% endif %}
+
+            <div class="mb-3">
+                <label for="id_username" class="form-label">Nombre de usuario</label>
+                <input type="text" name="username" class="form-control {% if form.username.errors %}is-invalid{% endif %}" id="id_username" value="{{ form.username.value|default:'' }}" required placeholder="Elige un nombre de usuario único">
+                {% for error in form.username.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="mb-3">
+                <label for="id_email" class="form-label">Correo electrónico</label>
+                <input type="email" name="email" class="form-control {% if form.email.errors %}is-invalid{% endif %}" id="id_email" value="{{ form.email.value|default:'' }}" placeholder="ejemplo@correo.com">
+                {% for error in form.email.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="mb-3">
+                <label for="id_password1" class="form-label">Contraseña</label>
+                <input type="password" name="password1" class="form-control {% if form.password1.errors %}is-invalid{% endif %}" id="id_password1" placeholder="Crea una contraseña segura">
+                {% for error in form.password1.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="mb-3">
+                <label for="id_password2" class="form-label">Confirmar contraseña</label>
+                <input type="password" name="password2" class="form-control {% if form.password2.errors %}is-invalid{% endif %}" id="id_password2" placeholder="Vuelve a escribir la contraseña">
+                {% for error in form.password2.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-success">Crear Cuenta</button>
+            </div>
+        </form>
+
+        <div class="text-center mt-4 text-white login-link">
+            <small>¿Ya tienes una cuenta? <a href="{% url 'login' %}">Inicia sesión aquí</a></small>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

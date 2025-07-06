@@ -1,0 +1,140 @@
+{% extends 'gestion/base.html' %}
+{% block title %}Iniciar Sesión{% endblock %}
+
+{% block content %}
+
+<style>
+    .login-container {
+        /* Centra el contenido vertical y horizontalmente en la vista */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 85vh; /* Ocupa casi toda la altura de la ventana */
+        perspective: 1000px; /* Activa el espacio 3D para los elementos hijos */
+    }
+
+    .login-card {
+        width: 100%;
+        max-width: 420px;
+        padding: 2.5rem;
+        
+        /* --- El efecto 3D y "Glassmorphism" --- */
+        background: rgba(255, 255, 255, 0.1); /* Fondo semitransparente */
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        backdrop-filter: blur(12px); /* El efecto de desenfoque del fondo */
+        -webkit-backdrop-filter: blur(12px); /* Para Safari */
+        
+        /* Sombras para crear profundidad */
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), 
+                    inset 0 -2px 5px rgba(0,0,0,0.2), 
+                    inset 0 2px 5px rgba(255,255,255,0.3);
+
+        /* Transición suave para el efecto hover */
+        transition: transform 0.5s ease;
+        transform-style: preserve-3d; /* Mantiene las transformaciones 3D */
+    }
+
+    /* Efecto 3D al pasar el ratón por encima */
+    .login-container:hover .login-card {
+        transform: rotateY(5deg) rotateX(2deg) translateZ(20px);
+    }
+
+    .login-card h3 {
+        color: #fff;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+        font-weight: 600;
+    }
+
+    .form-label {
+        color: #eee; /* Color de etiqueta más suave */
+    }
+
+    .form-control {
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        border-radius: 8px;
+    }
+
+    .form-control:focus {
+        background: rgba(0, 0, 0, 0.3);
+        border-color: #0d6efd; /* Color primario de Bootstrap */
+        box-shadow: 0 0 10px rgba(13, 110, 253, 0.5);
+        color: white;
+    }
+
+    /* Placeholder de color blanco */
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    .btn-primary {
+        /* Gradiente para el botón */
+        background-image: linear-gradient(to right, #0d6efd, #0a58ca);
+        border: none;
+        padding: 12px;
+        font-weight: 600;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(13, 110, 253, 0.4);
+    }
+
+    .register-link a {
+        color: #ffc107; /* Amarillo para destacar */
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+    .register-link a:hover {
+        text-decoration: underline;
+    }
+
+</style>
+
+<div class="login-container">
+    <div class="login-card">
+        <h3 class="text-center mb-4">
+            <i class="bi bi-box-arrow-in-right"></i> <!-- Icono más genérico para login -->
+            Iniciar Sesión
+        </h3>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger text-center p-2">
+                    {% for error in form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% elif form.errors %}
+                 <div class="alert alert-danger text-center p-2">
+                    Tu usuario o contraseña son incorrectos.
+                </div>
+            {% endif %}
+
+            <div class="mb-3">
+                <label for="id_username" class="form-label">Usuario</label>
+                <input type="text" name="username" class="form-control {% if form.username.errors %}is-invalid{% endif %}" id="id_username" required placeholder="Escribe tu usuario">
+            </div>
+
+            <div class="mb-3">
+                <label for="id_password" class="form-label">Contraseña</label>
+                <input type="password" name="password" class="form-control {% if form.password.errors %}is-invalid{% endif %}" id="id_password" required placeholder="••••••••">
+            </div>
+
+            <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-primary">Entrar</button>
+            </div>
+        </form>
+
+        <div class="text-center mt-4 text-white register-link">
+            <small>¿No tienes cuenta? <a href="{% url 'registro' %}">Regístrate aquí</a></small>
+        </div>
+    </div>
+</div>
+{% endblock %}

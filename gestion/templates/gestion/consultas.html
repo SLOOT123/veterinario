@@ -1,0 +1,160 @@
+{% extends 'gestion/base.html' %}
+
+{% block title %}Historial de Consultas{% endblock %}
+
+{% block content %}
+<style>
+    /* Contenedor principal para la tabla */
+    .table-container {
+        background-color: #ffffff; /* Fondo blanco sólido para máxima legibilidad */
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        color: #333; /* Texto oscuro por defecto */
+    }
+
+    /* Estilo del encabezado de la página */
+    .page-header {
+        border-bottom: 1px solid #e9ecef;
+        padding-bottom: 1rem;
+        margin-bottom: 2rem;
+    }
+    .page-header h1 {
+        color: #2c3e50; /* Color oscuro y profesional para el título */
+        font-weight: 600;
+        text-shadow: none; /* Sin sombra en fondo claro */
+    }
+
+    /* Estilos de la tabla moderna */
+    .modern-table {
+        border-collapse: separate;
+        border-spacing: 0 8px; /* Espacio vertical entre filas */
+    }
+    .modern-table thead th {
+        background-color: #f8f9fa;
+        border: none;
+        color: #6c757d;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+    }
+    .modern-table tbody tr {
+        background-color: #fff;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        border-radius: 8px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .modern-table tbody tr:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        z-index: 10;
+    }
+    .modern-table td {
+        padding: 1rem;
+        vertical-align: middle;
+        border: none;
+    }
+    .modern-table td:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
+    .modern-table td:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
+
+    /* Estilos para celdas específicas */
+    .cell-mascota { font-weight: 600; color: #2c3e50; }
+    .cell-cliente { font-size: 0.9rem; color: #6c757d; }
+    .cell-motivo { font-style: italic; }
+
+    /* Grupo de botones de acción */
+    .action-btn-group .btn {
+        border-radius: 50%; /* Botones redondos */
+        width: 38px;
+        height: 38px;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 4px;
+        border: none;
+    }
+    .btn-warning { background-color: #fff3cd; color: #664d03; }
+    .btn-danger { background-color: #f8d7da; color: #58151c; }
+    .btn-info { background-color: #cff4fc; color: #055160; }
+
+    /* Estilo para el estado vacío */
+    .empty-state {
+        text-align: center;
+        padding: 4rem;
+        background-color: #f8f9fa;
+        border-radius: 12px;
+    }
+    .empty-state i {
+        font-size: 4rem;
+        color: #ced4da;
+    }
+    .empty-state h4 {
+        margin-top: 1.5rem;
+        color: #6c757d;
+    }
+</style>
+
+<div class="table-container">
+    <!-- Encabezado de la página -->
+    <div class="page-header d-flex justify-content-between align-items-center">
+        <h1 class="mb-0"><i class="bi bi-clipboard2-pulse-fill"></i> Historial de Consultas</h1>
+        <a href="{% url 'nueva_consulta' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle-fill me-2"></i>Registrar Nueva Consulta
+        </a>
+    </div>
+
+    {% if consultas %}
+        <div class="table-responsive">
+            <table class="table modern-table align-middle">
+                <thead class="text-center">
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Mascota / Cliente</th>
+                        <th>Motivo</th>
+                        <th>Diagnóstico</th>
+                        <th>Tratamiento</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for consulta in consultas %}
+                    <tr>
+                        <td class="text-center">
+                            <strong>{{ consulta.fecha|date:"d" }}</strong>
+                            <small class="d-block">{{ consulta.fecha|date:"M Y" }}</small>
+                        </td>
+                        <td>
+                            <div class="cell-mascota">{{ consulta.mascota.nombre }}</div>
+                            <div class="cell-cliente">{{ consulta.mascota.cliente.nombre }}</div>
+                        </td>
+                        <td class="cell-motivo">{{ consulta.motivo }}</td>
+                        <td>{{ consulta.diagnostico|default:"-"|truncatewords:10 }}</td>
+                        <td>{{ consulta.tratamiento|default:"-"|truncatewords:10 }}</td>
+                        <td class="text-center">
+                            <div class="action-btn-group" role="group">
+                                <a href="{% url 'editar_consulta' consulta.id %}" class="btn btn-warning" title="Editar Consulta">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+                                <a href="{% url 'eliminar_consulta' consulta.id %}" class="btn btn-danger" title="Eliminar Consulta">
+                                    <i class="bi bi-trash-fill"></i>
+                                </a>
+                                <a href="{% url 'boleta_consulta_pdf' consulta.id %}" class="btn btn-info" title="Generar Boleta PDF">
+                                    <i class="bi bi-file-earmark-pdf-fill"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i class="bi bi-journal-x"></i>
+            <h4>No hay consultas registradas todavía.</h4>
+            <p class="text-muted">¡Comienza registrando la primera consulta!</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
