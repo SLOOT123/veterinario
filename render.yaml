@@ -3,7 +3,14 @@ services:
     name: veterinario-app
     env: python
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn core.wsgi:application"
+    startCommand: >
+      gunicorn core.wsgi:application
+      --chdir /opt/render/project/src
+      --workers 3
+      --bind 0.0.0.0:10000
+      --log-level info
+      --access-logfile -
+      --error-logfile -
     envVars:
       - key: DEBUG
-        value: False
+        value: "False"
