@@ -1,5 +1,5 @@
 """
-Django settings for veterinario project.
+Django settings for core project.
 Generado por 'django-admin startproject' usando Django 5.2.3
 """
 
