@@ -11,10 +11,10 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # DEBUG Y PRODUCCIÓN
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-qi56prrj#3%8y7dnmho_1f_aqpo*cfyunf(sx36f$$b=j6=ths')
-DEBUG = False
-ALLOWED_HOSTS = ['perrovaca.onrender.com']
-CSRF_TRUSTED_ORIGINS = ['https://perrovaca.onrender.com']
+ALLOWED_HOSTS = ['perrovaca.onrender.com', 'localhost', '127.0.0.1']
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 # APLICACIONES
 INSTALLED_APPS = [
