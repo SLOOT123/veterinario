@@ -3,7 +3,7 @@ services:
     name: veterinario-app
     env: python
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn SLOOT123.wsgi:application"
+    startCommand: "gunicorn core.wsgi:application"
     envVars:
       - key: DEBUG
         value: False
