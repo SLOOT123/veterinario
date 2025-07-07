@@ -40,8 +40,8 @@ MIDDLEWARE = [
 ]
 
 # URLS Y WSGI
-ROOT_URLCONF = 'core.urls'
-WSGI_APPLICATION = 'core.wsgi.application'
+ROOT_URLCONF = 'veterinario.urls'
+WSGI_APPLICATION = 'veterinario.wsgi.application'
 
 # TEMPLATES
 TEMPLATES = [
