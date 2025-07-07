@@ -1,1 +1,1 @@
-web: gunicorn veterinario.wsgi:application
+web: gunicorn core.wsgi:application
