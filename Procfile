@@ -1,8 +1,5 @@
-web: gunicorn core.wsgi:application --bind 0.0.0.0:$PORT
-
-     --chdir . \
-     --bind 0.0.0.0:$PORT \
-     --workers 3 \
-     --log-level info \
-     --access-logfile - \
-     --error-logfile -
+web: gunicorn core.wsgi:application \
+    --bind 0.0.0.0:$PORT \
+    --access-logfile - \
+    --error-logfile - \
+    --log-level debug
