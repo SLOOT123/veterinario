@@ -2,19 +2,21 @@ services:
   - type: web
     name: veterinario-app
     env: python
-    buildCommand: pip install -r requirements.txt
+    plan: free
+    buildCommand: >
+      pip install -r requirements.txt &&
+      python manage.py collectstatic --noinput &&
+      python manage.py migrate
     startCommand: >
-      # 1️⃣ Asegúrate de que Python “vea” tu repo como workspace
-      export PYTHONPATH=$PWD &&
-
-      # 2️⃣ Lanza Gunicorn apuntando a core.wsgi, con chdir y logs
-      gunicorn core.wsgi:application \
-        --chdir . \
-        --workers 3 \
-        --bind 0.0.0.0:10000 \
-        --log-level info \
-        --access-logfile - \
-        --error-logfile -
+      gunicorn veterinario.wsgi:application
     envVars:
-      - key: DEBUG
-        value: "False"
+      - key: DJANGO_SETTINGS_MODULE
+        value: veterinario.settings
+      - key: PYTHONPATH
+        value: /opt/render/project/src  # o la ruta exacta
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        value: veterinario-app.onrender.com
+      - key: DATABASE_URL
+        value: <tu URL de Postgres>
