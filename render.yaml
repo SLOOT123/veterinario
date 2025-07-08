@@ -2,21 +2,20 @@ services:
   - type: web
     name: veterinario-app
     env: python
-    plan: free
     buildCommand: >
       pip install -r requirements.txt &&
       python manage.py collectstatic --noinput &&
       python manage.py migrate
     startCommand: >
-      gunicorn veterinario.wsgi:application
+      gunicorn core.wsgi:application --bind 0.0.0.0:$PORT
     envVars:
       - key: DJANGO_SETTINGS_MODULE
-        value: veterinario.settings
+        value: core.settings
       - key: PYTHONPATH
-        value: /opt/render/project/src  # o la ruta exacta
+        value: /opt/render/project/src
       - key: SECRET_KEY
-        generateValue: true
+        fromSecret: SECRET_KEY
       - key: ALLOWED_HOSTS
         value: veterinario-app.onrender.com
       - key: DATABASE_URL
-        value: <tu URL de Postgres>
+        fromSecret: DATABASE_URL
